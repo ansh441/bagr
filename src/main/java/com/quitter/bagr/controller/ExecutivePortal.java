@@ -6,9 +6,15 @@ import com.quitter.bagr.model.Executive;
 import com.quitter.bagr.services.ExecutiveService;
 import com.quitter.bagr.view.ApiResponse;
 import com.quitter.bagr.view.Status;
+import com.quitter.bagr.view.dashboard.ItineraryResponse;
 import com.quitter.bagr.view.dashboard.loginResponse;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/executivePortal")
@@ -16,6 +22,8 @@ public class ExecutivePortal {
     @Autowired
     private ExecutiveService service;
     private final String AUTHORIZATION = "Authorization";
+    @Value("${spring.auth.secret}")
+    private String secretKey;
 
 
     @PostMapping("/login")
@@ -42,7 +50,12 @@ public class ExecutivePortal {
 
             }
             //get the key for the user
-            String token = "key";
+            Map<String,String> claimsMap = new HashMap<>();
+            claimsMap.put("username",userName);
+            claimsMap.put("exec_Id",String.valueOf(found.getId()));
+            claimsMap.put("name", found.getName());
+
+            String token = DashboardHelper.generateToken(found.getUsername(),secretKey,claimsMap);
 
             //respond with the key
             responseBuilder
@@ -53,6 +66,35 @@ public class ExecutivePortal {
         {
             responseBuilder.status(e.toStatus());
         }
+        return responseBuilder.build();
+    }
+
+    @PutMapping("/itinerary")
+    public ApiResponse<ItineraryResponse> changeItinerary(@RequestHeader(AUTHORIZATION) String bearerToken){
+        ApiResponse.ApiResponseBuilder<ItineraryResponse> responseBuilder = ApiResponse.builder();
+        // verify Token
+        try{
+            Claims claims = DashboardHelper.getClaims(bearerToken,secretKey);
+            // Identify caller
+            String userName = claims.get("username").toString();
+
+            // Execute
+            String message = String.format("Hi %s",userName);
+            // Respond
+
+            responseBuilder.payload(ItineraryResponse.builder()
+                            .message(message)
+                            .build()).status(new Status());
+
+        }catch(Exception e){
+            responseBuilder.status(Status.builder()
+                    .code(300).message(e.getMessage())
+                    .reason(bagrException.Reason.INTERNAL_SERVER_ERROR.toString())
+                    .build());
+
+        }
+
+
         return responseBuilder.build();
     }
 

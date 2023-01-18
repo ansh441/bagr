@@ -2,7 +2,6 @@ package com.quitter.bagr.controller;
 
 import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.helper.DashboardHelper;
-import com.quitter.bagr.helper.ModifyItinerary;
 import com.quitter.bagr.model.Executive;
 import com.quitter.bagr.model.Itinerary;
 import com.quitter.bagr.repository.PassengerRepo;
@@ -25,6 +24,8 @@ import java.util.Map;
 public class ExecutivePortal {
     @Autowired
     private ExecutiveService service;
+    ItineraryService itineraryService;
+    PassengerRepo passengerRepo;
     private final String AUTHORIZATION = "Authorization";
     @Value("${spring.auth.secret}")
     private String secretKey;
@@ -74,9 +75,8 @@ public class ExecutivePortal {
     }
 
     @PutMapping("/itinerary")
-    public ApiResponse<ItineraryResponse> changeItinerary(@RequestHeader(AUTHORIZATION) String bearerToken, Itinerary updatedItinerary, String pnr){
-        ItineraryService itineraryService;
-        PassengerRepo passengerRepo;
+    public ApiResponse<ItineraryResponse> changeItinerary(@RequestHeader(AUTHORIZATION) String bearerToken, @RequestBody Itinerary updatedItinerary,@RequestParam String pnr){
+
         ApiResponse.ApiResponseBuilder<ItineraryResponse> responseBuilder = ApiResponse.builder();
         // verify Token
         try{
@@ -86,7 +86,7 @@ public class ExecutivePortal {
 
             // Execute
             String message = String.format("Hi %s",userName);
-            ModifyItinerary.updateItinerary(updatedItinerary,pnr);
+            itineraryService.updateItineraryById(updatedItinerary,passengerRepo.getByPnr(pnr));
             // Respond
 
             responseBuilder.payload(ItineraryResponse.builder()

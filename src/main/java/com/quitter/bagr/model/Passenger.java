@@ -25,5 +25,5 @@ public class Passenger {
     private int flight_id;
     private boolean is_checked_in;
     private String metadata;
-    private int itinerary_id;
+
 }

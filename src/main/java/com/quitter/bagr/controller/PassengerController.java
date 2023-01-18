@@ -38,9 +38,8 @@ public class PassengerController {
     @PostMapping("/AddItinerary")
     public ApiResponse<PassengerResponse> AddItinerary(@RequestBody Itinerary itinerary){
         ApiResponse.ApiResponseBuilder<PassengerResponse> apiResponseBuilder = ApiResponse.builder();
-//        itinerary.setPassenger_id(currPassenger.getId());
-        itineraryRepo.save(itinerary);
         itinerary.setPassenger_id(currPassenger.getId());
+        itineraryRepo.save(itinerary);
         apiResponseBuilder.payload(PassengerResponse.builder().passenger(currPassenger)
                 .itinerary(itinerary).build()).status(Status.builder()
                 .message("Itinerary Added").build());

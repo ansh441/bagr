@@ -23,6 +23,7 @@ public class ItineraryService {
         itinerary.setCheckin_luggage_weight(update.getCheckin_luggage_weight());
         itinerary.setCabin_luggage_weight(update.getCabin_luggage_weight());
         itinerary.setAdd_ons(update.getAdd_ons());
+        itineraryRepo.save(itinerary);
         return itinerary;
 
     }

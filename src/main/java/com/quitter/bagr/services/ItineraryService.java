@@ -18,7 +18,7 @@ public class ItineraryService {
         return itineraryRepo.getById(itinerary_id);
     }
     public Itinerary updateItineraryById(Itinerary update, Passenger passenger){
-        Itinerary itinerary = itineraryRepo.getReferenceById(passenger.getItinerary_id());
+        Itinerary itinerary = itineraryRepo.getItineraryByPassengerId(passenger.getId());
         itinerary.setCheckin_luggage_qty(update.getCheckin_luggage_qty());
         itinerary.setCheckin_luggage_weight(update.getCheckin_luggage_weight());
         itinerary.setCabin_luggage_weight(update.getCabin_luggage_weight());

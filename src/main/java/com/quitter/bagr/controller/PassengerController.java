@@ -24,8 +24,7 @@ public class PassengerController {
     Passenger currPassenger;
     //login
     @PostMapping("/addPassenger")
-    public ApiResponse<PassengerResponse> AddPassenger(@RequestBody Passenger passenger)
-    {
+    public ApiResponse<PassengerResponse> AddPassenger(@RequestBody Passenger passenger) {
         currPassenger = passenger;
         passengerService.savePassenger(passenger);
         ApiResponse.ApiResponseBuilder<PassengerResponse> responseBuilder = ApiResponse.builder();
@@ -35,12 +34,12 @@ public class PassengerController {
                         .message("Passenger Details Added!! Go Ahead with the Itinerary").build());
         return responseBuilder.build();
     }
+
     @PostMapping("/AddItinerary")
     public ApiResponse<PassengerResponse> AddItinerary(@RequestBody Itinerary itinerary){
         ApiResponse.ApiResponseBuilder<PassengerResponse> apiResponseBuilder = ApiResponse.builder();
-
+//        itinerary.setPassenger_id(currPassenger.getId());
         itineraryRepo.save(itinerary);
-//        currPassenger.setItinerary_id(itinerary.getId());
         itinerary.setPassenger_id(currPassenger.getId());
         apiResponseBuilder.payload(PassengerResponse.builder().passenger(currPassenger)
                 .itinerary(itinerary).build()).status(Status.builder()
@@ -48,6 +47,7 @@ public class PassengerController {
         return apiResponseBuilder.build();
 
     }
+
     @PutMapping("/ModifyYourItinerary")
     public ApiResponse<PassengerResponse> ModifyItinerary(@RequestBody Itinerary updatedItinerary,
                                                           @RequestParam String pnr){
@@ -59,12 +59,11 @@ public class PassengerController {
 //                throw new bagrException(404, "Passenger not found", bagrException.Reason.NOT_FOUND);
 //            }
             itineraryService.updateItineraryById(updatedItinerary,passenger);
-            Itinerary finalItinerary = itineraryRepo. (passenger.getId());
-            itineraryRepo.get(passenger.getId()),
+            Itinerary finalItinerary = itineraryRepo.getItineraryByPassengerId(passenger.getId());
             responseBuilder.payload(PassengerResponse.builder().passenger(passenger)
-                    .itinerary(itineraryRepo.)
+                    .itinerary(finalItinerary)
                     .build()).status(Status.builder()
-                    .message("Hi" + passenger.getFirst_name() + "Your Itinerary changed!!").build());
+                    .message("Hi " + passenger.getFirst_name() + "Your Itinerary changed!!").build());
 
 //        }
 //        catch(Exception e){

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "bagr.itinerary")
+@Table(name = "itinerary")
 public class Itinerary {
     @Id
     @GeneratedValue
@@ -22,5 +22,6 @@ public class Itinerary {
     private int checkin_luggage_weight;
     private int cabin_luggage_weight;
     private String add_ons;
+    private int passenger_id;
 
 }

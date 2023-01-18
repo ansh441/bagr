@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "bagr.passenger")
+@Table(name = "passenger")
 public class Passenger {
     @Id
     @GeneratedValue

@@ -2,8 +2,12 @@ package com.quitter.bagr.controller;
 
 import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.helper.DashboardHelper;
+import com.quitter.bagr.helper.ModifyItinerary;
 import com.quitter.bagr.model.Executive;
+import com.quitter.bagr.model.Itinerary;
+import com.quitter.bagr.repository.PassengerRepo;
 import com.quitter.bagr.services.ExecutiveService;
+import com.quitter.bagr.services.ItineraryService;
 import com.quitter.bagr.view.ApiResponse;
 import com.quitter.bagr.view.Status;
 import com.quitter.bagr.view.dashboard.ItineraryResponse;
@@ -70,7 +74,9 @@ public class ExecutivePortal {
     }
 
     @PutMapping("/itinerary")
-    public ApiResponse<ItineraryResponse> changeItinerary(@RequestHeader(AUTHORIZATION) String bearerToken){
+    public ApiResponse<ItineraryResponse> changeItinerary(@RequestHeader(AUTHORIZATION) String bearerToken, Itinerary updatedItinerary, String pnr){
+        ItineraryService itineraryService;
+        PassengerRepo passengerRepo;
         ApiResponse.ApiResponseBuilder<ItineraryResponse> responseBuilder = ApiResponse.builder();
         // verify Token
         try{
@@ -80,6 +86,7 @@ public class ExecutivePortal {
 
             // Execute
             String message = String.format("Hi %s",userName);
+            ModifyItinerary.updateItinerary(updatedItinerary,pnr);
             // Respond
 
             responseBuilder.payload(ItineraryResponse.builder()
@@ -98,16 +105,17 @@ public class ExecutivePortal {
         return responseBuilder.build();
     }
 
-    @PostMapping("/AddExecutive")
+    @PostMapping("/addExecutive")
     public Executive addExecutive(@RequestBody Executive executive){
 
         return service.saveExecutive(executive);
     }
     @GetMapping("/getExecutiveById")
-    public Executive getExecutive(@RequestBody int executiveId)
-    {
+    public Executive getExecutive(@RequestBody int executiveId) {
         return service.getExecutive(executiveId);
 
     }
+
+
 }
 

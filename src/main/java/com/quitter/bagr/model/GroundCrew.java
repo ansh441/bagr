@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "bagr.ground_crew")
+@Table(name = "ground_crew")
 public class GroundCrew {
     @Id
     private int id;

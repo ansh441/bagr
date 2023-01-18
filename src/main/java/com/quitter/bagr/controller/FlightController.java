@@ -1,6 +1,7 @@
 package com.quitter.bagr.controller;
 
 import com.quitter.bagr.model.Flight;
+import com.quitter.bagr.model.Itinerary;
 import com.quitter.bagr.services.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,5 @@
 package com.quitter.bagr.controller;
 
-import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.model.Itinerary;
 import com.quitter.bagr.model.Passenger;
 import com.quitter.bagr.repository.ItineraryRepo;
@@ -62,7 +61,7 @@ public class PassengerController {
             responseBuilder.payload(PassengerResponse.builder().passenger(passenger)
                     .itinerary(finalItinerary)
                     .build()).status(Status.builder()
-                    .message("Hi " + passenger.getFirst_name() + "Your Itinerary changed!!").build());
+                    .message("Hi " + passenger.getFirst_name() + " Your Itinerary changed!!").build());
 
 //        }
 //        catch(Exception e){

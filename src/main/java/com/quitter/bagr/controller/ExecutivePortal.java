@@ -4,6 +4,8 @@ import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.helper.DashboardHelper;
 import com.quitter.bagr.model.Executive;
 import com.quitter.bagr.model.Itinerary;
+import com.quitter.bagr.model.Passenger;
+import com.quitter.bagr.repository.ItineraryRepo;
 import com.quitter.bagr.repository.PassengerRepo;
 import com.quitter.bagr.services.ExecutiveService;
 import com.quitter.bagr.services.ItineraryService;
@@ -25,7 +27,10 @@ public class ExecutivePortal {
     @Autowired
     private ExecutiveService service;
     ItineraryService itineraryService;
+    @Autowired
     PassengerRepo passengerRepo;
+    @Autowired
+    ItineraryRepo itineraryRepo;
     private final String AUTHORIZATION = "Authorization";
     @Value("${spring.auth.secret}")
     private String secretKey;
@@ -105,10 +110,47 @@ public class ExecutivePortal {
         return responseBuilder.build();
     }
 
+    @PutMapping("/checkinPoint")
+    public ApiResponse<ItineraryResponse> PassengerCheckin(@RequestHeader(AUTHORIZATION) String bearerToken, @RequestParam String passengerPNR){
+        ApiResponse.ApiResponseBuilder<ItineraryResponse> responseBuilder = ApiResponse.builder();
+        try {
+            //get the passenger
+            Passenger passenger = passengerRepo.getByPnr(passengerPNR);
+            //get the executive
+            Claims claims = DashboardHelper.getClaims(bearerToken, secretKey);
+            String userName = claims.get("username").toString();
+
+            String message = String.format("Passenger %s is checked-in by %s",
+                    passenger.getFirst_name(), userName);
+            Executive executive = service.findByUsername(userName);
+            //update the executive details
+            executive.setTotal_checkins((Integer.parseInt(executive.getTotal_checkins()) + 1) + "");
+            Itinerary iti = itineraryRepo.getItineraryByPassengerId(passenger.getId());
+            executive.setTotal_baggage(executive.getTotal_baggage()+ iti.getCheckin_luggage_qty());
+            service.saveExecutive(executive);
+            //check-in the passenger
+            passenger.set_checked_in(true);
+            passengerRepo.save(passenger);
+
+            responseBuilder.payload(ItineraryResponse.builder()
+                    .message(message).build()).status(new Status());
+
+
+
+        }
+        catch(Exception e){
+            responseBuilder.status(Status.builder()
+                    .code(300).message(e.getMessage())
+                    .reason(bagrException.Reason.INTERNAL_SERVER_ERROR.toString()).build());
+        }
+        return responseBuilder.build();
+    }
+
     @PostMapping("/addExecutive")
     public Executive addExecutive(@RequestBody Executive executive){
 
         return service.saveExecutive(executive);
+
     }
     @GetMapping("/getExecutiveById")
     public Executive getExecutive(@RequestBody int executiveId) {

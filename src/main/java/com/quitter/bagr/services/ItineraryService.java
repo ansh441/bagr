@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ItineraryService {
-    @Autowired
-    ItineraryRepo itineraryRepo;
-    @Autowired
-    PassengerRepo passengerRepo;
+
+    final ItineraryRepo itineraryRepo;
+    final PassengerRepo passengerRepo;
+
+    public ItineraryService(ItineraryRepo itineraryRepo, PassengerRepo passengerRepo) {
+        this.itineraryRepo = itineraryRepo;
+        this.passengerRepo = passengerRepo;
+    }
 
     public Itinerary getItineraryRepo(int itinerary_id){
         return itineraryRepo.getById(itinerary_id);

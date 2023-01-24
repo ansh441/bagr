@@ -15,11 +15,11 @@ import java.util.List;
 public class FlightController {
     @Autowired
     private FlightService flightService;
-    @PostMapping("/AddFlight")
+    @PostMapping("/Flight/new")
     public Flight addFlight(@RequestBody Flight flight){
         return flightService.saveFlight(flight);
     }
-    @PostMapping("/AddFlights")
+    @PostMapping("/Flights/new")
     public List<Flight> addFlights(@RequestBody List<Flight> flights)
     {
         return flightService.saveFlights(flights);

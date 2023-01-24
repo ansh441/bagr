@@ -12,17 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/passengerPortal")
+@RequestMapping("/Portal/passenger")
 public class PassengerController {
-    @Autowired
-    private PassengerService passengerService;
-    @Autowired
-    private ItineraryRepo itineraryRepo;
-    @Autowired
-    private ItineraryService itineraryService;
+    private final PassengerService passengerService;
+    private final ItineraryRepo itineraryRepo;
+    private final ItineraryService itineraryService;
+
+    public PassengerController(PassengerService passengerService, ItineraryRepo itineraryRepo, ItineraryService itineraryService) {
+        this.passengerService = passengerService;
+        this.itineraryRepo = itineraryRepo;
+        this.itineraryService = itineraryService;
+    }
+
     Passenger currPassenger;
     //login
-    @PostMapping("/addPassenger")
+    @PostMapping("/Passenger/new")
     public ApiResponse<PassengerResponse> AddPassenger(@RequestBody Passenger passenger) {
         currPassenger = passenger;
         passengerService.savePassenger(passenger);
@@ -34,7 +38,7 @@ public class PassengerController {
         return responseBuilder.build();
     }
 
-    @PostMapping("/AddItinerary")
+    @PostMapping("/Itinerary/new")
     public ApiResponse<PassengerResponse> AddItinerary(@RequestBody Itinerary itinerary){
         ApiResponse.ApiResponseBuilder<PassengerResponse> apiResponseBuilder = ApiResponse.builder();
         itinerary.setPassenger_id(currPassenger.getId());

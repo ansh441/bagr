@@ -22,15 +22,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/executivePortal")
+@RequestMapping("/Portal/executive")
 public class ExecutivePortal {
-    @Autowired
-    private ExecutiveService service;
-    ItineraryService itineraryService;
-    @Autowired
-    PassengerRepo passengerRepo;
-    @Autowired
-    ItineraryRepo itineraryRepo;
+    private final ExecutiveService service;
+    final ItineraryService itineraryService;
+    final PassengerRepo passengerRepo;
+    final ItineraryRepo itineraryRepo;
+
+    public ExecutivePortal(ExecutiveService service, ItineraryService itineraryService,
+                           PassengerRepo passengerRepo, ItineraryRepo itineraryRepo) {
+        this.service = service;
+        this.itineraryService = itineraryService;
+        this.passengerRepo = passengerRepo;
+        this.itineraryRepo = itineraryRepo;
+    }
+
     private final String AUTHORIZATION = "Authorization";
     @Value("${spring.auth.secret}")
     private String secretKey;
@@ -110,7 +116,7 @@ public class ExecutivePortal {
         return responseBuilder.build();
     }
 
-    @PutMapping("/checkinPoint")
+    @PutMapping("/checkin")
     public ApiResponse<ItineraryResponse> PassengerCheckin(@RequestHeader(AUTHORIZATION) String bearerToken, @RequestParam String passengerPNR){
         ApiResponse.ApiResponseBuilder<ItineraryResponse> responseBuilder = ApiResponse.builder();
         try {
@@ -146,13 +152,13 @@ public class ExecutivePortal {
         return responseBuilder.build();
     }
 
-    @PostMapping("/addExecutive")
+    @PostMapping("/Executive/new")
     public Executive addExecutive(@RequestBody Executive executive){
 
         return service.saveExecutive(executive);
 
     }
-    @GetMapping("/getExecutiveById")
+    @GetMapping("/executive")
     public Executive getExecutive(@RequestBody int executiveId) {
         return service.getExecutive(executiveId);
 

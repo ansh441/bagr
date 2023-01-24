@@ -1,0 +1,28 @@
+POST http://localhost:9090/executive/AddExecutive
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-01-06T170453.400.json
+
+###
+
+GET http://localhost:9090/api
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-01-01T211913.200.txt
+
+###
+
+GET http://localhost:9090/api
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-01-01T205220.200.txt
+
+###
+

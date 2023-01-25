@@ -3,8 +3,10 @@ package com.quitter.bagr.controller;
 import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.helper.DashboardHelper;
 import com.quitter.bagr.model.Executive;
+import com.quitter.bagr.model.Flight;
 import com.quitter.bagr.model.Itinerary;
 import com.quitter.bagr.model.Passenger;
+import com.quitter.bagr.repository.FlightRepo;
 import com.quitter.bagr.repository.ItineraryRepo;
 import com.quitter.bagr.repository.PassengerRepo;
 import com.quitter.bagr.services.ExecutiveService;
@@ -14,12 +16,12 @@ import com.quitter.bagr.view.Status;
 import com.quitter.bagr.view.dashboard.ItineraryResponse;
 import com.quitter.bagr.view.dashboard.loginResponse;
 import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/Portal/executive")
@@ -28,13 +30,15 @@ public class ExecutivePortal {
     final ItineraryService itineraryService;
     final PassengerRepo passengerRepo;
     final ItineraryRepo itineraryRepo;
+    final FlightRepo flightRepo;
 
     public ExecutivePortal(ExecutiveService service, ItineraryService itineraryService,
-                           PassengerRepo passengerRepo, ItineraryRepo itineraryRepo) {
+                           PassengerRepo passengerRepo, ItineraryRepo itineraryRepo,FlightRepo flightRepo) {
         this.service = service;
         this.itineraryService = itineraryService;
         this.passengerRepo = passengerRepo;
         this.itineraryRepo = itineraryRepo;
+        this.flightRepo = flightRepo;
     }
 
     private final String AUTHORIZATION = "Authorization";
@@ -137,7 +141,20 @@ public class ExecutivePortal {
             //check-in the passenger
             passenger.set_checked_in(true);
             passengerRepo.save(passenger);
-
+            //flight details updated
+            Flight flight;
+            Optional<Flight> optionalFlight= flightRepo.findById(passenger.getFlight_id());
+            if(optionalFlight.isPresent())
+                flight=optionalFlight.get();
+            else {
+                responseBuilder.status(Status.builder().code(404)
+                        .message("flight of the corresponding passenger is Not found ")
+                        .reason(bagrException.Reason.NOT_FOUND.toString()).build());
+                return responseBuilder.build();
+            }
+            flight.setTotal_baggage(String.valueOf(Integer.parseInt(flight.getTotal_baggage())
+                    + iti.getCheckin_luggage_qty()));
+            flightRepo.save(flight);
             responseBuilder.payload(ItineraryResponse.builder()
                     .message(message).build()).status(new Status());
 

@@ -24,7 +24,7 @@ public class FlightService {
     }
 
     public Optional<Flight> getFlightById(int flightId){
-      return flightRepo.findById(flightId);
+       return flightRepo.findById(flightId);
 
     }
 }

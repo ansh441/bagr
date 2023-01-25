@@ -1,5 +1,6 @@
 package com.quitter.bagr.controller;
 
+import com.quitter.bagr.core.bagrException;
 import com.quitter.bagr.model.Itinerary;
 import com.quitter.bagr.model.Passenger;
 import com.quitter.bagr.repository.ItineraryRepo;
@@ -54,12 +55,12 @@ public class PassengerController {
     public ApiResponse<PassengerResponse> ModifyItinerary(@RequestBody Itinerary updatedItinerary,
                                                           @RequestParam String pnr){
         ApiResponse.ApiResponseBuilder<PassengerResponse> responseBuilder = ApiResponse.builder();
-//        try{
+        try{
             Passenger passenger = passengerService.getPassengerByPNR(pnr);
-//            if(passenger==null)
-//            {
-//                throw new bagrException(404, "Passenger not found", bagrException.Reason.NOT_FOUND);
-//            }
+            if(passenger==null)
+            {
+                throw new bagrException(404, "Passenger not found", bagrException.Reason.NOT_FOUND);
+            }
             itineraryService.updateItineraryById(updatedItinerary,passenger);
             Itinerary finalItinerary = itineraryRepo.getItineraryByPassengerId(passenger.getId());
             responseBuilder.payload(PassengerResponse.builder().passenger(passenger)
@@ -67,12 +68,12 @@ public class PassengerController {
                     .build()).status(Status.builder()
                     .message("Hi " + passenger.getFirst_name() + " Your Itinerary changed!!").build());
 
-//        }
-//        catch(Exception e){
-//            responseBuilder.status(Status.builder()
-//                    .code(300).message(e.getMessage())
-//                    .reason(bagrException.Reason.INTERNAL_SERVER_ERROR.toString()).build());
-//        }
+        }
+        catch(Exception e){
+            responseBuilder.status(Status.builder()
+                    .code(300).message(e.getMessage())
+                    .reason(bagrException.Reason.INTERNAL_SERVER_ERROR.toString()).build());
+        }
         return responseBuilder.build();
     }
 

@@ -22,8 +22,8 @@ public class Flight {
     private Date arrival_time;
     private Date departure_time;
     private String gate;
-    private String is_loaded;
+    private String is_loaded = "Loaded";
     private String status;
     private String belt;
-    private String total_baggage;
+    private Integer total_baggage = 0;
 }

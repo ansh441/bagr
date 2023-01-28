@@ -27,7 +27,7 @@ public class PassengerController {
 
     Passenger currPassenger;
     //login
-    @PostMapping("/Passenger/new")
+    @PostMapping("/new")
     public ApiResponse<PassengerResponse> AddPassenger(@RequestBody Passenger passenger) {
         currPassenger = passenger;
         passengerService.savePassenger(passenger);
@@ -51,7 +51,7 @@ public class PassengerController {
 
     }
 
-    @PutMapping("/ModifyYourItinerary")
+    @PutMapping("/Itinerary/update")
     public ApiResponse<PassengerResponse> ModifyItinerary(@RequestBody Itinerary updatedItinerary,
                                                           @RequestParam String pnr){
         ApiResponse.ApiResponseBuilder<PassengerResponse> responseBuilder = ApiResponse.builder();

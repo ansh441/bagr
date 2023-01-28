@@ -27,10 +27,10 @@ import java.util.Optional;
 @RequestMapping("/Portal/executive")
 public class ExecutivePortal {
     private final ExecutiveService service;
-    final ItineraryService itineraryService;
-    final PassengerRepo passengerRepo;
-    final ItineraryRepo itineraryRepo;
-    final FlightRepo flightRepo;
+    private final ItineraryService itineraryService;
+    private final PassengerRepo passengerRepo;
+    private final ItineraryRepo itineraryRepo;
+    private final FlightRepo flightRepo;
 
     public ExecutivePortal(ExecutiveService service, ItineraryService itineraryService,
                            PassengerRepo passengerRepo, ItineraryRepo itineraryRepo,FlightRepo flightRepo) {
@@ -135,8 +135,8 @@ public class ExecutivePortal {
             Executive executive = service.findByUsername(userName);
             //update the executive details
             executive.setTotal_checkins((Integer.parseInt(executive.getTotal_checkins()) + 1) + "");
-            Itinerary iti = itineraryRepo.getItineraryByPassengerId(passenger.getId());
-            executive.setTotal_baggage(executive.getTotal_baggage()+ iti.getCheckin_luggage_qty());
+            Itinerary itinerary = itineraryRepo.getItineraryByPassengerId(passenger.getId());
+            executive.setTotal_baggage(executive.getTotal_baggage()+ itinerary.getCheckin_luggage_qty());
             service.saveExecutive(executive);
             //check-in the passenger
             passenger.set_checked_in(true);
@@ -152,8 +152,11 @@ public class ExecutivePortal {
                         .reason(bagrException.Reason.NOT_FOUND.toString()).build());
                 return responseBuilder.build();
             }
-            flight.setTotal_baggage(String.valueOf(Integer.parseInt(flight.getTotal_baggage())
-                    + iti.getCheckin_luggage_qty()));
+//            flight.setTotal_baggage(flight.getTotal_baggage()
+//                    + itinerary.getCheckin_luggage_qty());
+            int totalLuggage = passengerRepo.getTotalLuggageFromItinerary(flight.getId());
+            flight.setTotal_baggage(totalLuggage);
+
             flightRepo.save(flight);
             responseBuilder.payload(ItineraryResponse.builder()
                     .message(message).build()).status(new Status());
